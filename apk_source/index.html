@@ -1,18 +1,518 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>New Website</title>
-        <style>
-            body { background: #f0f0f0; color: #333; font-family: sans-serif; text-align: center; padding-top: 50px; }
-            h1 { color: #2196F3; }
-        </style>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <p>Created with TOMS WEB HOST Ultimate.</p>
-        <script>
-            console.log("Welcome to TOMS WEB HOST!");
-        </script>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BET CLUB 71 | Official Win Go</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+ 
+    <style>
+        :root { --primary-blue: #2b6cb0; --dark-blue: #1a365d; --text-slate: #334155; --site-orange: #ffaa45; }
+        body { -webkit-tap-highlight-color: transparent; user-select: none; background-color: #f1f5f9; overflow-x: hidden; color: var(--text-slate); }
+        
+        .gradient-blue { background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%); }
+        .tab-active { color: white !important; background: var(--primary-blue) !important; border-radius: 12px 12px 0 0; }
+        .mode-btn-active { background-color: white !important; color: var(--primary-blue) !important; border: 2px solid var(--primary-blue) !important; font-weight: 900; transform: scale(1.05); }
+        
+        .chart-row { display: grid; grid-template-columns: 2.5fr 1fr repeat(10, 1fr) 1fr; align-items: center; text-align: center; border-bottom: 1px solid #e2e8f0; padding: 12px 0; }
+        .num-circle { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #94a3b8; border: 1px solid #cbd5e1; margin: auto; position: relative; z-index: 2; background: white; font-weight: 600; }
+        .num-selected { color: white !important; border: none !important; font-weight: 800; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        
+        th { background-color: var(--dark-blue); color: white; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+        td { font-weight: 600; color: #1e293b; border-bottom: 1px solid #f1f5f9; }
+ 
+        #bet-popup { transition: transform 0.3s ease-out; position: fixed; bottom: 0; left: 0; width: 100%; z-index: 3000; transform: translateY(100%); visibility: hidden; }
+        #bet-popup.active { transform: translateY(0); visibility: visible; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); z-index: 2500; }
+        .overlay.active { display: block; }
+        .bet-locked { filter: grayscale(1); pointer-events: none; opacity: 0.6; }
+        
+        .ball { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; border: 2px solid rgba(255,255,255,0.3); font-size: 16px; }
+        
+        .btn-quick { background: #f4f4f5; color: #666; padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 14px; }
+        .btn-quick.active { background: #ffaa45; color: white; }
+        .qty-btn { background: #f4f4f5; color: #666; width: 30px; height: 30px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #e2e8f0; }
+ 
+        #big-countdown-overlay {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 4500; align-items: center; justify-content: center; gap: 10px;
+            pointer-events: none;
+        }
+        .count-card { 
+            background: white; border-radius: 12px; font-size: 90px; font-weight: 900; 
+            color: #ffcc00; width: 100px; height: 150px; display: flex; 
+            align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #eee;
+        }
+ 
+        .result-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 9999; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: none; }
+        .result-card { width: 85%; max-width: 340px; position: relative; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5)); }
+        
+        .card-header { position: relative; height: 180px; border-radius: 30px 30px 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; overflow: hidden; }
+        .card-header.win { background: linear-gradient(180deg, #ff9a44 0%, #ff4b2b 100%); }
+        .card-header.loss { background: linear-gradient(180deg, #cfd8dc 0%, #78909c 100%); }
+        
+        .decor-circle { position: absolute; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .decor-1 { top: -20px; left: -30px; }
+        .decor-2 { bottom: -20px; right: -30px; }
+ 
+        .header-decoration { position: absolute; top: 15px; width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid rgba(255,255,255,0.8); box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 2; background: inherit; }
+ 
+        .card-body { background: white; border-radius: 0 0 30px 30px; padding: 40px 20px 25px 20px; text-align: center; }
+        .receipt-area { background: #fffdf7; border: 2px dashed #ffd54f; border-radius: 15px; padding: 20px; margin-top: -60px; position: relative; z-index: 5; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .loss .receipt-area { border-color: #b0bec5; background: #fcfdfe; }
+ 
+        @keyframes popIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-result { position: absolute; bottom: -70px; left: 50%; transform: translateX(-50%); width: 45px; height: 45px; border: 2.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; cursor: pointer; transition: 0.2s; }
+        .close-result:active { transform: translateX(-50%) scale(0.9); }
+    </style>
+</head>
+<body class="pb-24 font-sans">
+ 
+    <div class="gradient-blue p-5 rounded-b-[40px] shadow-lg">
+        <div class="flex justify-between items-center mb-6 text-white px-2">
+            <button onclick="window.history.back()"><i class="fa-solid fa-chevron-left text-lg"></i></button>
+            <h1 class="text-2xl font-black italic tracking-tighter uppercase">Bet Club <span class="text-blue-300">71</span></h1>
+            <div></div> 
+        </div>
+        <div class="bg-white rounded-[30px] p-6 shadow-2xl">
+            <div class="flex flex-col items-center">
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-[3px] mb-1">Available Balance</p>
+                <div class="text-4xl font-black text-slate-800 mb-5 flex items-center gap-2">
+                    <span class="text-blue-600">৳</span><span id="user-balance">0.00</span>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="handleWithdraw()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-3.5 rounded-2xl active:scale-95 transition-all">Withdraw</button>
+                <button onclick="handleDeposit()" class="flex-1 bg-blue-600 text-white font-bold py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all">Deposit</button>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="grid grid-cols-4 gap-3 p-4">
+        <button onclick="switchMode('30s')" id="btn-30s" class="mode-btn bg-white rounded-2xl p-3 text-center shadow-sm flex flex-col items-center justify-center border-2 border-transparent">
+            <i class="fa-solid fa-bolt text-blue-500 text-xl mb-1"></i>
+            <p class="text-[10px] font-bold">30s</p>
+        </button>
+        <button onclick="switchMode('1m')" id="btn-1m" class="mode-btn mode-btn-active bg-white rounded-2xl p-3 text-center shadow-sm flex flex-col items-center justify-center border-2 border-transparent">
+            <i class="fa-solid fa-clock text-blue-500 text-xl mb-1"></i>
+            <p class="text-[10px] font-bold">1m</p>
+        </button>
+        <button onclick="switchMode('3m')" id="btn-3m" class="mode-btn bg-white rounded-2xl p-3 text-center shadow-sm flex flex-col items-center justify-center border-2 border-transparent">
+            <i class="fa-solid fa-hourglass-half text-blue-500 text-xl mb-1"></i>
+            <p class="text-[10px] font-bold">3m</p>
+        </button>
+        <button onclick="switchMode('5m')" id="btn-5m" class="mode-btn bg-white rounded-2xl p-3 text-center shadow-sm flex flex-col items-center justify-center border-2 border-transparent">
+            <i class="fa-solid fa-shield-halved text-blue-500 text-xl mb-1"></i>
+            <p class="text-[10px] font-bold">5m</p>
+        </button>
+    </div>
+ 
+    <div class="gradient-blue mx-4 rounded-3xl p-5 shadow-xl flex justify-between items-center relative overflow-hidden">
+        <div class="absolute right-0 top-0 opacity-10"><i class="fa-solid fa-clock text-8xl text-white"></i></div>
+        <div class="z-10">
+            <p id="display-mode-label" class="text-[10px] font-bold text-blue-200 uppercase mb-2 tracking-widest">Win Go 1m</p>
+            <div class="flex flex-col">
+                <span class="text-[10px] text-blue-300 font-bold uppercase -mb-1">Period Number</span>
+                <p id="current-period" class="text-lg font-bold tracking-tighter text-white">---</p>
+            </div>
+        </div>
+        <div class="text-right z-10 border-l border-white/20 pl-5">
+            <p class="text-[10px] font-bold text-blue-200 uppercase mb-1">Time Left</p>
+            <div class="flex gap-1 font-mono text-4xl font-black text-white drop-shadow-lg" id="timer-display">
+                <span id="timer-min">00</span>:<span id="timer-sec">00</span>
+            </div>
+        </div>
+    </div>
+ 
+    <div id="big-countdown-overlay">
+        <div class="count-card">0</div>
+        <div class="count-card" id="big-count-num">5</div>
+    </div>
+ 
+    <div class="betting-area p-4 space-y-4 mt-2 relative">
+        <div class="flex gap-3">
+            <button onclick="openBet('Green', '#2ecc71')" class="flex-1 bg-green-500 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95">Green</button>
+            <button onclick="openBet('Violet', '#9b59b6')" class="flex-1 bg-purple-500 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95">Violet</button>
+            <button onclick="openBet('Red', '#e74c3c')" class="flex-1 bg-red-500 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95">Red</button>
+        </div>
+        <div class="bg-white p-5 rounded-[30px] shadow-md border border-gray-200">
+            <div class="grid grid-cols-5 gap-4 mb-6">
+                <button onclick="openBet('0', '#9b59b6')" class="flex justify-center"><div class="ball bg-purple-500">0</div></button>
+                <button onclick="openBet('1', '#2ecc71')" class="flex justify-center"><div class="ball bg-green-500">1</div></button>
+                <button onclick="openBet('2', '#e74c3c')" class="flex justify-center"><div class="ball bg-red-500">2</div></button>
+                <button onclick="openBet('3', '#2ecc71')" class="flex justify-center"><div class="ball bg-green-500">3</div></button>
+                <button onclick="openBet('4', '#e74c3c')" class="flex justify-center"><div class="ball bg-red-500">4</div></button>
+                <button onclick="openBet('5', '#2ecc71')" class="flex justify-center"><div class="ball bg-green-500">5</div></button>
+                <button onclick="openBet('6', '#e74c3c')" class="flex justify-center"><div class="ball bg-red-500">6</div></button>
+                <button onclick="openBet('7', '#2ecc71')" class="flex justify-center"><div class="ball bg-green-500">7</div></button>
+                <button onclick="openBet('8', '#e74c3c')" class="flex justify-center"><div class="ball bg-red-500">8</div></button>
+                <button onclick="openBet('9', '#2ecc71')" class="flex justify-center"><div class="ball bg-green-500">9</div></button>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="openBet('Big', '#f39c12')" class="flex-1 bg-orange-400 text-white font-black py-3 rounded-xl shadow-md active:scale-95">BIG</button>
+                <button onclick="openBet('Small', '#3498db')" class="flex-1 bg-blue-500 text-white font-black py-3 rounded-xl shadow-md active:scale-95">SMALL</button>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="px-4 mt-2">
+        <div class="bg-slate-200 rounded-t-2xl flex overflow-hidden p-1">
+            <button onclick="switchTab('records')" id="tab-records" class="flex-1 p-3 text-center font-bold text-slate-600 transition-all">Records</button>
+            <button onclick="switchTab('chart')" id="tab-chart" class="flex-1 p-3 text-center font-bold text-slate-600 tab-active transition-all">Chart</button>
+            <button onclick="switchTab('my')" id="tab-my" class="flex-1 p-3 text-center font-bold text-slate-600 transition-all">My History</button>
+        </div>
+        <div id="content-chart" class="bg-white p-2 min-h-[350px] relative overflow-x-auto shadow-inner">
+            <div id="chart-list" class="relative"></div>
+        </div>
+        <div id="content-records" class="hidden bg-white shadow-inner min-h-[350px]">
+            <table class="w-full text-center">
+                <thead><tr><th class="p-3">Period</th><th class="p-3">Num</th><th class="p-3">Size</th><th class="p-3">Color</th></tr></thead>
+                <tbody id="records-body"></tbody>
+            </table>
+        </div>
+        <div id="content-my" class="hidden bg-white shadow-inner min-h-[350px]">
+            <table class="w-full text-left text-xs">
+                <thead><tr><th class="p-3">Period</th><th class="p-3">Pick</th><th class="p-3">Amount</th><th class="p-3">Result</th></tr></thead>
+                <tbody id="my-history-body"></tbody>
+            </table>
+        </div>
+    </div>
+ 
+    <div id="result-overlay" class="result-container">
+        <div id="result-card" class="result-card">
+            <div id="res-header" class="card-header">
+                <div class="decor-circle decor-1"></div>
+                <div class="decor-circle decor-2"></div>
+                <div class="header-decoration">
+                    <i id="res-icon" class="fa-solid fa-trophy text-4xl text-white"></i>
+                </div>
+                <h2 id="res-title" class="text-3xl font-black mt-20 tracking-tight">Congratulations</h2>
+            </div>
+            <div class="card-body">
+                <div id="res-receipt" class="receipt-area">
+                    <p id="res-label" class="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-1">Winning Bonus</p>
+                    <p class="text-3xl font-black text-slate-800">৳<span id="res-amount">0.00</span></p>
+                    <div class="mt-3 pt-3 border-t border-dashed border-gray-200">
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Period: WinGo <span id="res-mode">1m</span></p>
+                        <p id="res-period" class="text-xs text-slate-600 font-mono font-bold">---</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-4 mt-8">
+                    <div class="text-center">
+                        <p class="text-[9px] font-bold text-gray-400 mb-1 uppercase">Result</p>
+                        <div class="flex items-center gap-2">
+                             <span id="res-color" class="px-4 py-1 rounded-full text-[10px] font-bold text-white shadow-sm">--</span>
+                             <span id="res-num" class="w-7 h-7 flex items-center justify-center rounded-full bg-white border-2 border-gray-100 font-bold text-slate-700 shadow-sm">-</span>
+                             <span id="res-size" class="px-4 py-1 rounded-full text-[10px] font-bold text-white shadow-sm">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="close-result" onclick="closeResultPopup()">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+        </div>
+    </div>
+ 
+    <div id="bet-popup" class="bg-white rounded-t-2xl overflow-hidden shadow-2xl">
+        <div id="popup-header-bg" class="p-3 text-center text-white relative">
+            <p class="text-sm font-medium">WinGo <span id="popup-mode">1m</span></p>
+            <div id="popup-selection-label" class="bg-white mx-auto mt-2 py-1 px-8 rounded-sm w-max font-bold text-sm">Select <span id="popup-selection"></span></div>
+        </div>
+        <div class="p-4 space-y-5">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium">Base</span>
+                <div class="flex gap-2">
+                    <button onclick="setBase(1)" class="btn-quick active">1</button>
+                    <button onclick="setBase(10)" class="btn-quick">10</button>
+                    <button onclick="setBase(100)" class="btn-quick">100</button>
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-gray-700 font-medium">Quantity</span>
+                <div class="flex items-center bg-gray-100 rounded-sm">
+                    <button onclick="changeQty(-1)" class="qty-btn">-</button>
+                    <input type="number" id="bet-qty" value="1" readonly class="w-12 text-center bg-transparent font-bold">
+                    <button onclick="changeQty(1)" class="qty-btn">+</button>
+                </div>
+            </div>
+            <div class="flex justify-end gap-1 flex-wrap">
+                <button onclick="setMult(1)" class="btn-quick active text-[10px] py-1 px-2">X1</button>
+                <button onclick="setMult(5)" class="btn-quick text-[10px] py-1 px-2">X5</button>
+                <button onclick="setMult(10)" class="btn-quick text-[10px] py-1 px-2">X10</button>
+            </div>
+        </div>
+        <div class="flex">
+            <button onclick="closePopups()" class="flex-1 py-4 bg-gray-100 text-gray-500 font-bold">Cancel</button>
+            <button onclick="confirmBet()" id="popup-confirm-btn" class="flex-[2] py-4 text-white font-bold">Total ৳<span id="total-bet-display">1.00</span></button>
+        </div>
+    </div>
+ 
+    <div id="overlay" class="overlay" onclick="closePopups()"></div>
+ 
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8oS1bG1VTO-7p7qtpnfMrimev86SDjIQ",
+            authDomain: "betclubwin71.firebaseapp.com",
+            databaseURL: "https://betclubwin71-default-rtdb.firebaseio.com",
+            projectId: "betclubwin71",
+            storageBucket: "betclubwin71.firebasestorage.app"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+ 
+        let userPhone = "Guest";
+        let balance = 0;
+        let currentMode = '1m';
+        let tempBet = null;
+        let baseAmount = 1;
+        let multiplier = 1;
+ 
+        const markets = { 
+            '30s': { duration: 30, timeLeft: 30, history: [] }, 
+            '1m': { duration: 60, timeLeft: 60, history: [] }, 
+            '3m': { duration: 180, timeLeft: 180, history: [] }, 
+            '5m': { duration: 300, timeLeft: 300, history: [] } 
+        };
+ 
+        function handleDeposit() { window.location.href = 'index.html'; }
+        function handleWithdraw() { window.location.href = 'index.html'; }
+ 
+        // Sync Balance from Realtime DB
+        function syncBalance() {
+            if(userPhone !== "Guest") {
+                db.ref(`users/${userPhone}/balance`).on('value', snap => {
+                    balance = snap.val() || 0;
+                    document.getElementById('user-balance').innerText = balance.toFixed(2);
+                });
+            }
+        }
+ 
+        // Market History Sync
+        function syncMarket() {
+            Object.keys(markets).forEach(m => {
+                db.ref(`history/${m}`).limitToLast(30).on('value', snap => {
+                    const data = snap.val();
+                    if(data) {
+                        markets[m].history = Object.values(data).sort((a,b) => b.period - a.period);
+                        if(m === currentMode) updateUI();
+                    }
+                });
+            });
+        }
+ 
+        function getPeriod(m) {
+            const now = new Date();
+            const dateStr = now.getFullYear().toString() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
+            const secondsInDay = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+            return dateStr + Math.floor(secondsInDay / markets[m].duration).toString().padStart(4, '0');
+        }
+ 
+        function updateTimers() {
+            const now = new Date();
+            const secondsInDay = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+ 
+            Object.keys(markets).forEach(m => {
+                const dur = markets[m].duration;
+                markets[m].timeLeft = dur - (secondsInDay % dur);
+                if (markets[m].timeLeft === 1) {
+                    executeGlobalDraw(m, getPeriod(m));
+                }
+            });
+ 
+            const cur = markets[currentMode];
+            if (cur.timeLeft <= 5) { 
+                document.getElementById('big-countdown-overlay').style.display = 'flex';
+                document.getElementById('big-count-num').innerText = cur.timeLeft;
+                document.querySelectorAll('.betting-area button').forEach(b => b.classList.add('bet-locked')); 
+                closePopups(); 
+            } else { 
+                document.getElementById('big-countdown-overlay').style.display = 'none';
+                document.querySelectorAll('.betting-area button').forEach(b => b.classList.remove('bet-locked')); 
+            }
+            document.getElementById('timer-sec').innerText = (cur.timeLeft % 60).toString().padStart(2,'0');
+            document.getElementById('timer-min').innerText = Math.floor(cur.timeLeft/60).toString().padStart(2,'0');
+            document.getElementById('current-period').innerText = getPeriod(currentMode);
+        }
+ 
+        function executeGlobalDraw(m, period) {
+            const ref = db.ref(`history/${m}`).child(period);
+            ref.once('value', snap => {
+                if(!snap.exists()) {
+                    const num = Math.floor(Math.random() * 10);
+                    const color = (num === 0 || num === 5) ? '#9b59b6' : (num % 2 === 0 ? '#e74c3c' : '#2ecc71');
+                    ref.set({ period, num, color, size: num >= 5 ? 'Big' : 'Small' });
+                }
+                setTimeout(() => checkUserBet(m, period), 1000);
+            });
+        }
+ 
+        function checkUserBet(m, period) {
+            if(userPhone === "Guest") return;
+            db.ref(`userBets/${userPhone}/${m}`).orderByChild('period').equalTo(period).once('value', snap => {
+                snap.forEach(child => {
+                    const bet = child.val();
+                    if(bet.status === 'Pending') {
+                        db.ref(`history/${m}`).child(period).once('value', hSnap => {
+                            const result = hSnap.val();
+                            if(!result) return;
+                            let isWin = false;
+                            if(!isNaN(bet.pick)) isWin = parseInt(bet.pick) === result.num;
+                            else if(bet.pick === 'Big') isWin = result.num >= 5;
+                            else if(bet.pick === 'Small') isWin = result.num <= 4;
+                            else if(bet.pick === 'Green') isWin = [1,3,7,9,5].includes(result.num);
+                            else if(bet.pick === 'Red') isWin = [2,4,6,8,0].includes(result.num);
+                            else if(bet.pick === 'Violet') isWin = [0,5].includes(result.num);
+ 
+                            if(isWin) {
+                                const winAmt = bet.amount * (!isNaN(bet.pick) ? 9 : (bet.pick === 'Violet' ? 4.5 : 1.95));
+                                db.ref(`users/${userPhone}/balance`).transaction(b => (b || 0) + winAmt);
+                                child.ref.update({ status: 'WIN', winAmount: winAmt });
+                                if(m === currentMode) showNewResultPopup(true, winAmt, period, result);
+                            } else {
+                                child.ref.update({ status: 'LOSS' });
+                                if(m === currentMode) showNewResultPopup(false, 0, period, result);
+                            }
+                        });
+                    }
+                });
+            });
+        }
+ 
+        function confirmBet() {
+            const qty = parseInt(document.getElementById('bet-qty').value);
+            const total = baseAmount * multiplier * qty;
+            if(balance < total) return alert("Low Balance!");
+            
+            db.ref(`users/${userPhone}/balance`).transaction(curr => {
+                if(curr >= total) {
+                    const newBet = { 
+                        period: getPeriod(currentMode), 
+                        pick: tempBet.pick, 
+                        amount: total, 
+                        status: 'Pending', 
+                        time: Date.now() 
+                    };
+                    db.ref(`userBets/${userPhone}/${currentMode}`).push(newBet);
+                    return curr - total;
+                }
+            });
+            closePopups();
+        }
+ 
+        function renderMyHistory() {
+            if(userPhone === "Guest") return;
+            db.ref(`userBets/${userPhone}/${currentMode}`).limitToLast(15).on('value', snap => {
+                let html = ""; const data = snap.val();
+                if(data) {
+                    Object.values(data).reverse().forEach(h => {
+                        html += `<tr class="border-b"><td class="p-3 font-mono">${h.period.slice(-4)}</td><td class="p-3">${h.pick}</td><td class="p-3">৳${h.amount}</td><td class="p-3 font-bold ${h.status==='WIN'?'text-green-600':'text-red-500'}">${h.status}</td></tr>`;
+                    });
+                }
+                document.getElementById('my-history-body').innerHTML = html;
+            });
+        }
+ 
+        function showNewResultPopup(win, amt, prd, result) {
+            const overlay = document.getElementById('result-overlay');
+            document.getElementById('res-color').innerText = (result.color === '#2ecc71' ? 'Green' : (result.color === '#e74c3c' ? 'Red' : 'Violet'));
+            document.getElementById('res-color').style.background = result.color;
+            document.getElementById('res-num').innerText = result.num;
+            document.getElementById('res-size').innerText = result.size;
+            document.getElementById('res-size').style.background = (result.size === 'Big' ? '#f39c12' : '#3498db');
+            document.getElementById('res-mode').innerText = currentMode;
+            document.getElementById('res-period').innerText = prd;
+            document.getElementById('res-amount').innerText = amt.toFixed(2);
+ 
+            const card = document.getElementById('result-card');
+            const header = document.getElementById('res-header');
+            if(win) {
+                card.className = "result-card"; header.className = 'card-header win';
+                document.getElementById('res-title').innerText = "Congratulations";
+            } else {
+                card.className = "result-card"; header.className = 'card-header loss';
+                document.getElementById('res-title').innerText = "Loss";
+            }
+            overlay.style.display = 'flex';
+        }
+ 
+        function closeResultPopup() { document.getElementById('result-overlay').style.display = 'none'; }
+        function updateUI() { renderRecords(); renderChart(); }
+        function openBet(pick, color) { if(markets[currentMode].timeLeft <= 5) return; tempBet = {pick, color}; document.getElementById('popup-header-bg').style.background = color; document.getElementById('popup-confirm-btn').style.background = color; document.getElementById('popup-selection').innerText = pick; document.getElementById('bet-popup').classList.add('active'); document.getElementById('overlay').classList.add('active'); updatePopupTotal(); }
+        function closePopups() { document.getElementById('bet-popup').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+        
+        function switchMode(m) { 
+            currentMode = m; 
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('mode-btn-active')); 
+            document.getElementById('btn-'+m).classList.add('mode-btn-active'); 
+            document.getElementById('display-mode-label').innerText = "Win Go " + m; 
+            document.getElementById('popup-mode').innerText = m;
+            renderMyHistory(); updateUI(); 
+        }
+ 
+        function switchTab(t) { 
+            document.querySelectorAll('button[id^="tab-"]').forEach(b => b.classList.remove('tab-active')); 
+            document.querySelectorAll('div[id^="content-"]').forEach(c => c.classList.add('hidden')); 
+            document.getElementById('tab-'+t).classList.add('tab-active'); 
+            document.getElementById('content-'+t).classList.remove('hidden'); 
+            if(t==='chart') setTimeout(drawTrendLine, 100); 
+        }
+ 
+        function updatePopupTotal() { document.getElementById('total-bet-display').innerText = (baseAmount * multiplier * parseInt(document.getElementById('bet-qty').value)).toFixed(2); }
+        function setBase(v) { baseAmount = v; event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); updatePopupTotal(); }
+        function setMult(v) { multiplier = v; event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active')); event.target.classList.add('active'); updatePopupTotal(); }
+        function changeQty(v) { let el = document.getElementById('bet-qty'); let nv = parseInt(el.value)+v; if(nv>=1) el.value=nv; updatePopupTotal(); }
+        
+        function renderRecords() { document.getElementById('records-body').innerHTML = markets[currentMode].history.slice(0,15).map(h => `<tr><td class="p-3 font-mono text-[10px]">${h.period}</td><td class="p-3 font-black text-lg" style="color:${h.color}">${h.num}</td><td class="p-3 font-bold">${h.size}</td><td class="p-3"><span class="w-4 h-4 rounded-full inline-block" style="background:${h.color}"></span></td></tr>`).join(''); }
+        
+        function renderChart() {
+            const container = document.getElementById('chart-list');
+            let html = '<canvas id="canvas-trend" style="position:absolute;top:0;left:0;pointer-events:none;z-index:1;"></canvas>';
+            markets[currentMode].history.slice(0, 10).forEach(h => {
+                html += `<div class="chart-row"><div class="text-slate-400 font-mono text-[10px]">${h.period.slice(-4)}</div><div></div>${[0,1,2,3,4,5,6,7,8,9].map(n => `<div><div class="num-circle ${n===h.num?'num-selected':''}" style="${n===h.num?'background:'+h.color:''}">${n}</div></div>`).join('')}<div><div class="w-5 h-5 rounded-md text-white flex items-center justify-center text-[10px] font-bold m-auto" style="background:${h.num>=5?'#f39c12':'#3498db'}">${h.num>=5?'B':'S'}</div></div></div>`;
+            });
+            container.innerHTML = html;
+            setTimeout(drawTrendLine, 150);
+        }
+ 
+        function drawTrendLine() {
+            const canvas = document.getElementById('canvas-trend'); const container = document.getElementById('chart-list');
+            if(!canvas || !container) return;
+            canvas.width = container.offsetWidth; canvas.height = container.offsetHeight;
+            const ctx = canvas.getContext('2d'); ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 2;
+            const circles = container.querySelectorAll('.num-selected');
+            ctx.beginPath();
+            circles.forEach((c, i) => {
+                const r = c.getBoundingClientRect(); const cr = container.getBoundingClientRect();
+                const x = r.left - cr.left + r.width/2; const y = r.top - cr.top + r.height/2;
+                if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            }); ctx.stroke();
+        }
+ 
+        // Logic to get User from Main App
+        window.onload = () => { 
+            const urlParams = new URLSearchParams(window.location.search);
+            const userFromUrl = urlParams.get('user');
+ 
+            if (userFromUrl) {
+                userPhone = userFromUrl;
+                localStorage.setItem('userPhone', userPhone);
+            } else {
+                userPhone = localStorage.getItem('userPhone') || "Guest";
+            }
+ 
+            syncMarket(); 
+            syncBalance(); 
+            renderMyHistory(); 
+            setInterval(updateTimers, 1000); 
+        };
+    </script>
+</body>
 </html>
+ 
