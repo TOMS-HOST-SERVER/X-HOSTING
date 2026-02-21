@@ -1,248 +1,415 @@
-<!DOCTYPE html>
-<html lang="en">
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SK™ 30S Hack PRO AI_V15 - MMT LOGIC</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<title>Popup Notification</title>
+
 <style>
-    body, html {
-        margin: 0; padding: 0; height: 100%; overflow: hidden; 
-        font-family: 'Segoe UI', sans-serif;
-        background: #000; color: white;
-        touch-action: none;
-    }
+/* Overlay */
+.popup-overlay{
+  position: fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.6);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
 
-    iframe { width: 100%; height: 100%; border: none; }
+/* Box */
+.popup-box{
+  background:#fff;
+  width:90%;
+  max-width:420px;
+  border-radius:12px;
+  padding:20px;
+  text-align:center;
+  animation: zoom .3s ease;
+}
 
-    #predictionBox {
-        position: fixed; bottom: 50px; right: 15px;
-        background: rgba(0, 0, 0, 0.98); 
-        padding: 12px 8px; 
-        border-radius: 12px; 
-        width: 155px; 
-        text-align: center;
-        z-index: 99999; cursor: grab; backdrop-filter: blur(15px);
-        border: 2px solid #ff0055;
-        box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
-        touch-action: none;
-    }
+@keyframes zoom{
+  from{transform:scale(.7); opacity:0}
+  to{transform:scale(1); opacity:1}
+}
 
-    .animated-title {
-        font-size: 9px; font-weight: 900; margin-bottom: 8px;
-        letter-spacing: 0.8px; animation: rgTitle 1.5s infinite alternate;
-    }
+.popup-title{
+  font-size:22px;
+  font-weight:bold;
+  color:#7b2cbf;
+}
 
-    @keyframes rgTitle {
-        0% { color: #ff3d3d; text-shadow: 0 0 8px #ff3d3d; }
-        100% { color: #00ff88; text-shadow: 0 0 8px #00ff88; }
-    }
+.popup-text{
+  margin:12px 0;
+  color:#e63946;
+  font-size:16px;
+}
 
-    #predictionUI { display: flex; flex-direction: column; gap: 8px; }
+.popup-buttons{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+}
 
-    .login-img {
-        width: 32px; height: 32px; border-radius: 50%;
-        border: 1.5px solid #facc15; margin: 2px auto;
-        display: block; object-fit: cover;
-    }
+.popup-buttons a,
+.popup-buttons button{
+  border:none;
+  padding:10px 16px;
+  border-radius:8px;
+  font-size:14px;
+  cursor:pointer;
+}
 
-    #passwordInput {
-        width: 80%; padding: 4px; border-radius: 5px;
-        background: #000; color: #fff; margin-bottom: 6px; 
-        font-size: 9px; text-align: center;
-        border: 1.2px solid #ff3d3d;
-        animation: redPulse 1s infinite alternate;
-    }
-
-    @keyframes redPulse {
-        from { box-shadow: 0 0 2px #ff3d3d; }
-        to { box-shadow: 0 0 8px #ff3d3d; }
-    }
-
-    #loginBtn {
-        padding: 5px 15px; border-radius: 4px; border: none;
-        background: #facc15; font-weight: bold; cursor: pointer; font-size: 9px;
-        text-transform: uppercase; box-shadow: 0 0 5px #facc15;
-    }
-
-    .combined-signal-box {
-        display: flex; justify-content: space-around; align-items: center;
-        border: 1.2px solid rgba(255, 255, 255, 0.15);
-        border-radius: 8px; padding: 6px; background: rgba(255, 255, 255, 0.05);
-        min-height: 40px;
-    }
-
-    .result-text { font-size: 18px; font-weight: 900; letter-spacing: 1px; }
-
-    .period-num { 
-        font-size: 10px; color: #facc15; font-weight: bold; 
-        border: 1px solid rgba(250, 204, 21, 0.5); 
-        padding: 2px 5px; border-radius: 4px;
-    }
-
-    .timer { 
-        font-size: 9px; color: #fff; background: #111; 
-        padding: 2px 5px; border-radius: 4px; border: 1px solid #444; 
-    }
-
-    .tg-container {
-        display: flex; align-items: center; justify-content: center;
-        margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;
-    }
-    .tg-btn {
-        text-decoration: none; color: #0088cc; font-size: 11px; 
-        font-weight: bold; display: flex; align-items: center; gap: 4px;
-    }
-
-    .big { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
-    .small { color: #ff3d3d; text-shadow: 0 0 10px #ff3d3d; }
-    .wait { color: #888; animation: blink 1s infinite; font-size: 14px; }
-    .win { color: #00ff88; animation: zoom 0.5s infinite alternate; }
-    .loss { color: #ff3d3d; }
-
-    @keyframes blink { 50% { opacity: 0.3; } }
-    @keyframes zoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+.btn-share{background:#6c5ce7;color:#fff}
+.btn-cancel{background:#ccc}
+.btn-telegram{background:#00b4d8;color:#fff}
 </style>
 </head>
+
 <body>
 
-<iframe src="https://tkclub2.com/#/register?invitationCode=44544219903"></iframe>
-
-<div id="predictionBox">
-    <div class="animated-title">SK™ 30S Hack PRO AI_V15</div>
-
-    <div id="loginForm">
-        <img src="https://i.postimg.cc/fbNGNBsp/In-Shot-20260125-163547531.jpg" class="login-img">
-        <input type="password" id="passwordInput" placeholder="Password">
-        <br>
-        <button id="loginBtn">LOGIN</button>
+<!-- Popup -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <div class="popup-title">Master Mind Team</div>
+    <div class="popup-text">
+      নিয়মিত আপডেট সংক্রান্ত হ্যাক পেতে আমাদের টেলিগ্রাম চ্যানেলে যুক্ত থাকুন...!!
     </div>
 
-    <div id="predictionUI" style="display:none;">
-        <img src="https://i.postimg.cc/fbNGNBsp/In-Shot-20260125-163547531.jpg" class="login-img">
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin: 4px 0;">
-            <div id="period" class="period-num">ID: ----</div>
-            <div id="timer" class="timer">TIME: 00:30</div>
-        </div>
-        
-        <div class="combined-signal-box">
-            <div id="bsText" class="result-text wait">--</div>
-            <div id="statusText" style="font-size: 10px; font-weight: bold; color: #888;">READY</div>
-        </div>
+    <div class="popup-buttons">
+      <a class="btn-share" href="#" onclick="shareNow()">SHARE NOW</a>
+      <button class="btn-cancel" onclick="closePopup()">CANCEL</button>
+      <a class="btn-telegram" href="https://t.me/+HNHbj3dSeH80NGI1" target="_blank">
+        TELEGRAM
+      </a>
     </div>
-
-    <div class="tg-container">
-        <a href="https://t.me/skmehedi54" target="_blank" class="tg-btn">
-            <i class="fab fa-telegram"></i>
-            <span>Telegram</span>
-        </a>
-    </div>
+  </div>
 </div>
 
 <script>
-// --- LOGIC INTEGRATION ---
-let myPrediction = "";
-let isShowingResult = false;
-
-function getPeriod() {
-    const now = new Date();
-    const yyyy = now.getFullYear(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0');
-    let serial = (now.getHours() * 60 + now.getMinutes()) * 2 + (now.getSeconds() >= 30 ? 2 : 1);
-    return `${yyyy}${mm}${dd}30${serial}`; 
+// page load হলে popup দেখাবে
+window.onload = function(){
+  document.getElementById("popup").style.display="flex";
 }
 
-async function fetchResult() {
-    try { 
-        const res = await fetch(`https://mastermindteam.top/api/tkclub/wingo_30sec_history.json?ts=${Date.now()}`); 
-        const data = await res.json(); 
-        return data.data.list[0]; 
-    } catch (e) { return null; }
+// close button
+function closePopup(){
+  document.getElementById("popup").style.display="none";
 }
 
-function generateNewPrediction() {
-    const sigEl = document.getElementById('bsText');
-    const statusEl = document.getElementById('statusText');
-    myPrediction = (Math.random() > 0.5) ? "BIG" : "SMALL";
-    sigEl.innerText = myPrediction;
-    sigEl.className = "result-text " + myPrediction.toLowerCase();
-    statusEl.innerText = "ANALYZED";
-    statusEl.style.color = "#facc15";
-    isShowingResult = false;
+// share function
+function shareNow(){
+  if(navigator.share){
+    navigator.share({
+      title:'Master Mind Team',
+      text:'Join our Telegram channel',
+      url: 'https://t.me/YOUR_CHANNEL'
+    });
+  }else{
+    alert("Share supported না");
+  }
 }
+</script>
 
-async function startEngine() {
-    // Immediate Signal on Login
-    generateNewPrediction();
+</body>
+</html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title> DK WIN VIP - 30s</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Orbitron:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e91e63;
+            --secondary-color: #0059FF;
+            --accent-color: #ff4081;
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --gradient-primary: linear-gradient(135deg, #e91e63, #c2185b);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
 
-    setInterval(async () => {
-        const now = new Date();
-        const remain = 30 - (now.getSeconds() % 30);
-        
-        document.getElementById('timer').innerText = `TIME: 00:${String(remain).padStart(2, '0')}`;
-        document.getElementById('period').innerText = "ID: " + getPeriod().slice(-4);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        const sigEl = document.getElementById('bsText');
-        const statusEl = document.getElementById('statusText');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        // Logic: At 28s remaining, process previous result
-        if (remain === 28 && !isShowingResult) { 
-            const latest = await fetchResult();
-            if (latest && myPrediction !== "") {
-                const serverRes = parseInt(latest.number) >= 5 ? "BIG" : "SMALL";
-                isShowingResult = true;
-                const isWin = myPrediction === serverRes;
-                
-                // Show WIN/LOSS
-                sigEl.innerText = isWin ? "WIN" : "LOSS";
-                sigEl.className = "result-text " + (isWin ? "win" : "loss");
-                statusEl.innerText = isWin ? "SUCCESS" : "FAILED";
-                
-                // Transition to next signal after 3 seconds exactly
-                setTimeout(() => {
-                    generateNewPrediction();
-                }, 3000);
+        .header {
+            background: var(--card-background);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 5vw, 28px);
+            color: var(--primary-color);
+            letter-spacing: 2px;
+        }
+
+        .main-container {
+            max-width: 800px;
+            width: 95%;
+            margin: 20px auto;
+            background: var(--card-background);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .selection-box label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+
+        .selection-box select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #eee;
+            outline: none;
+        }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f9f9f9;
+            padding: 15px 10px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item span { display: block; font-size: 11px; color: var(--text-secondary); }
+        .info-item .value { font-size: 14px; font-weight: 700; color: var(--primary-color); margin-top: 5px; }
+
+        .prediction-box {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .prediction-box h2 { font-size: 14px; text-transform: uppercase; opacity: 0.9; }
+        .prediction-box #currentResult { font-size: 24px; font-weight: 800; margin-top: 10px; display: block; }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .analysis-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .history-section { margin-top: 20px; }
+        .history-card {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .win-text { color: #4caf50; font-weight: bold; }
+        .loss-text { color: #f44336; font-weight: bold; }
+
+        @media (max-width: 500px) {
+            .info-section { grid-template-columns: 1fr; }
+            .control-panel { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>𝙁𝙓 𝘾𝙊𝙈𝙈𝙐𝙉𝙄𝙏𝙔</h1>
+        <p style="font-size: 12px; color: #666;">WINGO 30 SECONDS ENGINE</p>
+    </div>
+
+    <div class="main-container">
+        <div class="control-panel">
+            <div class="selection-box">
+                <label>GAME TYPE</label>
+                <select id="resultType">
+                    <option value="bigsmall">BIG / SMALL</option>
+                    <option value="redgreen">RED / GREEN</option>
+                </select>
+            </div>
+            <div class="selection-box">
+                <label>SERVER</label>
+                <select id="serverSelect" onchange="updateServer()">
+                    <option value="">Select Server</option>
+                    <option value="vip">VIP SERVER (High Accuracy)</option>
+                    <option value="pro">PRO SERVER (Fast)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-item">
+                <span>PERIOD</span>
+                <div id="periodNumber" class="value">Loading...</div>
+            </div>
+            <div class="info-item">
+                <span>TIMER (30s)</span>
+                <div id="timer" class="value">00:30</div>
+            </div>
+            <div class="info-item">
+                <span>WIN RATE</span>
+                <div id="winAccuracy" class="value">0%</div>
+            </div>
+        </div>
+
+        <div class="prediction-box">
+            <h2>Next Prediction</h2>
+            <span id="currentResult">WAITING FOR SERVER...</span>
+        </div>
+
+        <div class="analysis-grid">
+            <div class="analysis-card">
+                <span>Total Wins</span>
+                <div id="totalWins" class="value" style="color: #4caf50; font-weight: 700;">0</div>
+            </div>
+            <div class="analysis-card">
+                <span>Total Losses</span>
+                <div id="totalLosses" class="value" style="color: #f44336; font-weight: 700;">0</div>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3 style="font-size: 14px; margin-bottom: 10px;">PREDICTION HISTORY</h3>
+            <div id="historyBody"></div>
+        </div>
+    </div>
+
+    <script>
+        let lastPeriod = "";
+        let totalWins = 0;
+        let totalLosses = 0;
+        let selectedServer = "";
+        let history = [];
+
+        function update30sEngine() {
+            const now = new Date();
+            const seconds = now.getUTCSeconds();
+            
+            // Wingo 30s Timer Logic
+            const remainingSeconds = seconds < 30 ? 30 - seconds : 60 - seconds;
+            
+            // Wingo 30s Period Logic
+            const year = now.getUTCFullYear();
+            const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(now.getUTCDate()).padStart(2, '0');
+            
+            // Calculate total 30-second blocks in the day
+            const total30SecBlocks = Math.floor((now.getUTCHours() * 3600 + now.getUTCMinutes() * 60 + seconds) / 30);
+            const period = `${year}${month}${day}1000${10001 + total30SecBlocks}`;
+
+            document.getElementById('timer').textContent = `00:${String(remainingSeconds).padStart(2, '0')}`;
+
+            if (lastPeriod !== period) {
+                lastPeriod = period;
+                document.getElementById('periodNumber').textContent = period;
+                if (selectedServer) {
+                    generatePrediction(period);
+                }
             }
         }
 
-        // Logic: Show WAIT during the last 3 seconds of the period
-        if (remain <= 3 && !isShowingResult) { 
-            sigEl.innerText = "WAIT"; 
-            sigEl.className = "result-text wait"; 
-            statusEl.innerText = "WAITING...";
+        function updateServer() {
+            selectedServer = document.getElementById('serverSelect').value;
+            if (selectedServer) {
+                generatePrediction(lastPeriod);
+            } else {
+                document.getElementById('currentResult').textContent = "WAITING FOR SERVER...";
+            }
         }
-    }, 1000);
-}
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-    if(document.getElementById("passwordInput").value === "skvip") { 
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("predictionUI").style.display = "block";
-        startEngine(); // Engine starts and generates first signal instantly
-    } else { alert("WRONG PASSWORD!"); }
-});
+        async function generatePrediction(period) {
+            const resDisplay = document.getElementById('currentResult');
+            resDisplay.textContent = "CALCULATING...";
+            
+            // Simulate Server Delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
 
-// --- DRAGGING SYSTEM ---
-const box = document.getElementById("predictionBox");
-let isDragging = false, offset = [0,0];
-const start = (e) => { 
-    isDragging = true; 
-    let c = e.clientX || (e.touches ? e.touches[0].clientX : 0); 
-    let y = e.clientY || (e.touches ? e.touches[0].clientY : 0); 
-    offset = [box.offsetLeft - c, box.offsetTop - y]; 
-};
-const move = (e) => { 
-    if (!isDragging) return; 
-    let c = (e.clientX || (e.touches ? e.touches[0].clientX : 0)); 
-    let y = (e.clientY || (e.touches ? e.touches[0].clientY : 0)); 
-    box.style.left = (c + offset[0]) + 'px'; 
-    box.style.top = (y + offset[1]) + 'px'; 
-    box.style.bottom = 'auto'; box.style.right = 'auto'; 
-};
-box.addEventListener('mousedown', start); box.addEventListener('touchstart', start);
-document.addEventListener('mousemove', move); document.addEventListener('touchmove', move);
-document.addEventListener('mouseup', () => isDragging = false); document.addEventListener('touchend', () => isDragging = false);
-</script>
+            const type = document.getElementById('resultType').value;
+            let prediction = "";
+            let prob = Math.floor(Math.random() * (98 - 82 + 1)) + 82;
 
+            if (type === 'bigsmall') {
+                prediction = Math.random() > 0.5 ? "BIG" : "SMALL";
+            } else {
+                prediction = Math.random() > 0.5 ? "RED" : "GREEN";
+            }
+
+            resDisplay.textContent = `${prediction} (${prob}%)`;
+
+            // History Update
+            const status = Math.random() > 0.2 ? "WIN" : "LOSS"; // Simulated Win/Loss
+            if (status === "WIN") totalWins++; else totalLosses++;
+
+            const historyItem = { period, prediction, status };
+            history.unshift(historyItem);
+            
+            updateUI();
+        }
+
+        function updateUI() {
+            const total = totalWins + totalLosses;
+            const accuracy = total === 0 ? 0 : Math.round((totalWins / total) * 100);
+            
+            document.getElementById('totalWins').textContent = totalWins;
+            document.getElementById('totalLosses').textContent = totalLosses;
+            document.getElementById('winAccuracy').textContent = accuracy + "%";
+
+            const historyBody = document.getElementById('historyBody');
+            historyBody.innerHTML = history.slice(0, 5).map(h => `
+                <div class="history-card">
+                    <span>${h.period}</span>
+                    <span>${h.prediction}</span>
+                    <span class="${h.status === 'WIN' ? 'win-text' : 'loss-text'}">${h.status}</span>
+                </div>
+            `).join('');
+        }
+
+        setInterval(update30sEngine, 1000);
+        update30sEngine(); // Initial Call
+    </script>
 </body>
 </html>
