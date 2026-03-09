@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TIKI</title>
+    <script>
+        (function(){
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.onkeydown = function(e) {
+                if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false;
+            }
+            setInterval(function(){ debugger; }, 100);
+        })();
+        window.onload = function() {
+            var _sec = "PCFkb2N0eXBlIGh0bWw+CjxodG1sPgogICAgPGhlYWQ+CiAgICAgICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgICAgIDx0aXRsZT5OZXcgV2Vic2l0ZTwvdGl0bGU+CiAgICAgICAgPHN0eWxlPgogICAgICAgICAgICBib2R5IHsgYmFja2dyb3VuZDogI2YwZjBmMDsgY29sb3I6ICMzMzM7IGZvbnQtZmFtaWx5OiBzYW5zLXNlcmlmOyB0ZXh0LWFsaWduOiBjZW50ZXI7IHBhZGRpbmctdG9wOiA1MHB4OyB9CiAgICAgICAgICAgIGgxIHsgY29sb3I6ICMyMTk2RjM7IH0KICAgICAgICA8L3N0eWxlPgogICAgPC9oZWFkPgogICAgPGJvZHk+CiAgICAgICAgPGgxPkhlbGxvIFdvcmxkITwvaDE+CiAgICAgICAgPHA+Q3JlYXRlZCB3aXRoIFRPTVMgV0VCIEhPU1QgVWx0aW1hdGUuPC9wPgogICAgICAgIDxzY3JpcHQ+CiAgICAgICAgICAgIGNvbnNvbGUubG9nKCJXZWxjb21lIHRvIFRPTVMgV0VCIEhPU1QhIik7CiAgICAgICAgPC9zY3JpcHQ+CiAgICA8L2JvZHk+CjwvaHRtbD48IWRvY3R5cGUgaHRtbD4KPGh0bWw+CiAgICA8aGVhZD4KICAgICAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICAgICAgPHRpdGxlPk5ldyBXZWJzaXRlPC90aXRsZT4KICAgICAgICA8c3R5bGU+CiAgICAgICAgICAgIGJvZHkgeyBiYWNrZ3JvdW5kOiAjZjBmMGYwOyBjb2xvcjogIzMzMzsgZm9udC1mYW1pbHk6IHNhbnMtc2VyaWY7IHRleHQtYWxpZ246IGNlbnRlcjsgcGFkZGluZy10b3A6IDUwcHg7IH0KICAgICAgICAgICAgaDEgeyBjb2xvcjogIzIxOTZGMzsgfQogICAgICAgIDwvc3R5bGU+CiAgICA8L2hlYWQ+CiAgICA8Ym9keT4KICAgICAgICA8aDE+SGVsbG8gV29ybGQhPC9oMT4KICAgICAgICA8cD5DcmVhdGVkIHdpdGggVE9NUyBXRUIgSE9TVCBVbHRpbWF0ZS48L3A+CiAgICAgICAgPHNjcmlwdD4KICAgICAgICAgICAgY29uc29sZS5sb2coIldlbGNvbWUgdG8gVE9NUyBXRUIgSE9TVCEiKTsKICAgICAgICA8L3NjcmlwdD4KICAgIDwvYm9keT4KPC9odG1sPg==";
+            var _dec = decodeURIComponent(escape(window.atob(_sec)));
+            document.open();
+            document.write(_dec);
+            document.close();
+        };
+    </script>
+</head>
+<body><div style="text-align:center;padding:50px;font-family:sans-serif;">🔒 Loading Secure Site...</div></body>
+</html>
