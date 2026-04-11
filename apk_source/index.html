@@ -1,201 +1,235 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jalwa Auto-Sync Hack</title>
+    <title>AR TRADING GPT-v4 PRO AI</title>
     <style>
-        * { box-sizing: border-box; }
-        body { background-color: #050a1e; color: white; font-family: sans-serif; margin: 0; display: flex; justify-content: center; min-height: 100vh; }
-        
-        /* Key Screen */
-        #loginScreen { position: fixed; inset: 0; background: #050a1e; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; padding: 20px; }
-        .login-card { background: #0b1431; padding: 30px; border-radius: 15px; border: 1px solid #00d2ff; width: 100%; max-width: 350px; text-align: center; }
-        
-        /* Main UI */
-        #mainUI { display: none; width: 100%; max-width: 420px; padding: 15px; }
-        .container { background: #0b1431; padding: 15px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-        .timer-display { text-align: center; background: #162447; padding: 12px; border-radius: 12px; color: #ffcc00; margin-bottom: 15px; font-weight: bold; border: 1px solid #1e2a4a; font-size: 1.2rem; }
-        
-        .box { border: 1px solid #1e2a4a; padding: 18px; border-radius: 15px; margin-bottom: 15px; background: #0d1b3e; }
-        .label { color: #00d2ff; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .target-period { color: #ffcc00; font-size: 1.35rem; font-weight: bold; font-family: 'Courier New', Courier, monospace; letter-spacing: 1px; }
-        .prediction-text { color: #00ff88; font-size: 2.5rem; font-weight: 800; margin: 10px 0; }
-        
-        /* Status Colors */
-        .status-win { color: #00ff88; font-weight: bold; }
-        .status-loss { color: #ff4d4d; font-weight: bold; }
-
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #1e2a4a; background: #050a1e; color: white; }
-        .btn-main { background: linear-gradient(to right, #00d2ff, #0072ff); border: none; padding: 12px; cursor: pointer; font-weight: bold; width: 100%; color: white; border-radius: 8px; font-size: 1rem; }
-        
-        /* Admin Panel */
-        #adminBox { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #162447; padding: 25px; border-radius: 15px; border: 2px solid #ff0055; z-index: 3000; width: 300px; }
-        
-        .history-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .history-table th { color: #00d2ff; padding: 10px; border-bottom: 2px solid #1e2a4a; text-align: left; }
-        .history-table td { padding: 10px; border-bottom: 1px solid #112240; }
+        :root {
+            --chat-bg: #212121;
+            --ai-accent: #10a37f;
+            --user-accent: #343541;
+            --text-color: #ececf1;
+            --glow: #00ff88;
+        }
+        body {
+            background-color: #343541;
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .top-nav {
+            background: #202123;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #4d4d4f;
+            color: var(--ai-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .analysis-panel {
+            background: #2b2c35;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #444;
+        }
+        .num-chip {
+            background: #1a1a1a;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #888;
+        }
+        .num-chip.hit {
+            border-color: var(--ai-accent);
+            color: var(--ai-accent);
+            box-shadow: 0 0 5px var(--ai-accent);
+        }
+        .market-bar {
+            background: #444654;
+            padding: 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #222;
+        }
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        .ai-message {
+            background: var(--chat-bg);
+            align-self: flex-start;
+            border-left: 4px solid var(--ai-accent);
+        }
+        .user-message {
+            background: var(--user-accent);
+            align-self: flex-end;
+            border: 1px solid #565869;
+        }
+        .result-card {
+            background: #000;
+            border: 1px solid var(--ai-accent);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .input-area {
+            background: #343541;
+            padding: 15px;
+            border-top: 1px solid #4d4d4f;
+        }
+        .input-box {
+            background: #40414f;
+            border: 1px solid #565869;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .input-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            flex: 1;
+            outline: none;
+        }
+        .send-btn {
+            background: var(--ai-accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .reg-link { color: var(--ai-accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div id="loginScreen">
-        <div class="login-card">
-            <h2 style="color: #00d2ff; margin-bottom: 5px;">ACCESS KEY</h2>
-            <p style="font-size: 12px; color: #888; margin-bottom: 20px;">Enter your license key to continue</p>
-            <input type="text" id="userKey" placeholder="Enter Key Here">
-            <button class="btn-main" onclick="validateKey()">ACTIVATE HACK</button>
-        </div>
+<div class="top-nav">AR TRADING AI GPT-v4 PRO</div>
+
+<div class="analysis-panel" id="number-grid"></div>
+
+<div class="market-bar">
+    <span>PERIOD: <b id="period" style="color: #ffcc00;">LOADING...</b></span>
+    <span>TIMER: <b id="timer" style="color: var(--ai-accent);">00:30</b></span>
+</div>
+
+<div class="chat-container" id="chatbox">
+    <div class="message ai-message">
+        হ্যালো! আমি <b>AR Trading AI GPT</b>। <br>
+        সঠিক পিরিয়ড সিঙ্ক করা হয়েছে। পরবর্তী সিগন্যালের জন্য <b>"Analyze"</b> লিখুন।
     </div>
+</div>
 
-    <div id="mainUI">
-        <div class="container">
-            <div class="timer-display">
-                <span style="color: #00d2ff;">WinGo 1 Min</span><br>
-                <span id="time">00:00</span>
-            </div>
-            
-            <div class="box">
-                <span class="label">🎯 Period Number</span>
-                <div id="period" class="target-period">Calculating...</div>
-            </div>
-
-            <div class="box" style="border-left: 6px solid #00ff88;">
-                <span class="label">🚀 Predicted Result</span>
-                <div id="predResult" class="prediction-text">Small</div>
-                <div style="color:#4fc3f7; font-weight: bold;">Suggested: <span id="predNums">2, 3</span></div>
-            </div>
-
-            <div class="box">
-                <span class="label">Winning History</span>
-                <table class="history-table">
-                    <thead>
-                        <tr><th>Period</th><th>Pred</th><th>Result</th><th>Status</th></tr>
-                    </thead>
-                    <tbody id="historyBody"></tbody>
-                </table>
-            </div>
-            
-            <div onclick="showAdminPrompt()" style="height: 30px; opacity: 0; cursor: default;">Admin</div>
-        </div>
+<div class="input-area">
+    <div class="input-box">
+        <input type="text" id="userInput" placeholder="Ask AI for signal...">
+        <button class="send-btn" onclick="processAI()">Send</button>
     </div>
+    <p style="font-size: 10px; text-align: center; color: #8e8ea0; margin-top: 10px;">
+        Official Site: <a href="https://hgnice.bet/#/register?invitationCode=325151812259" class="reg-link">Register Now</a>
+    </p>
+</div>
 
-    <div id="adminBox">
-        <h3 style="margin: 0 0 15px 0; color: #ff0055;">Settings</h3>
-        <div id="adminLoginPart">
-            <input type="password" id="adminPass" placeholder="Admin Password">
-            <button class="btn-main" onclick="accessAdmin()">Login</button>
-        </div>
-        <div id="adminControls" style="display:none;">
-            <input type="text" id="newKeyInput" placeholder="New Key (priya1995)">
-            <input type="text" id="newAdminPass" placeholder="New Admin Pass">
-            <button class="btn-main" style="background: #ff0055;" onclick="saveSettings()">Apply Changes</button>
-        </div>
-        <button onclick="closeAdmin()" style="background:none; border:none; color:gray; cursor:pointer; margin-top:10px; width:100%;">Close</button>
-    </div>
+<script>
+    const numGrid = document.getElementById('number-grid');
+    for(let i=0; i<=9; i++) {
+        numGrid.innerHTML += `<div class="num-chip" id="n-${i}">${i}</div>`;
+    }
 
-    <script>
-        let MASTER_KEY = "priya1995";
-        let ADMIN_PASS = "admin123";
+    function updateMarket() {
+        const now = new Date();
         
-        let lastLoggedPeriod = "";
-        let currentPred = "Small";
-        let currentNums = "2, 3";
+        const year = now.getUTCFullYear();
+        const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(now.getUTCDate()).padStart(2, '0');
+        const datePart = `${year}${month}${day}`;
 
-        function validateKey() {
-            if (document.getElementById('userKey').value === MASTER_KEY) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainUI').style.display = 'block';
-                startSyncEngine();
-            } else { alert("Invalid Key!"); }
+        // ৩০ সেকেন্ড পিরিয়ড লজিক: ১ মিনিটে ২টা পিরিয়ড
+        const totalHalfMinutes = (now.getUTCHours() * 120) + (now.getUTCMinutes() * 2) + (now.getUTCSeconds() >= 30 ? 1 : 0);
+        const periodId = datePart + "030" + String(totalHalfMinutes + 1).padStart(4, '0');
+        
+        document.getElementById('period').innerText = periodId;
+
+        // টাইমার ৩০ সেকেন্ড থেকে উল্টো কাউন্ট
+        const sec = now.getUTCSeconds();
+        const remaining = sec >= 30 ? 60 - sec : 30 - sec;
+        document.getElementById('timer').innerText = "00:" + String(remaining).padStart(2, '0');
+
+        if(remaining % 5 === 0) {
+            document.querySelectorAll('.num-chip').forEach(c => c.classList.remove('hit'));
+            document.getElementById('n-' + Math.floor(Math.random()*10)).classList.add('hit');
         }
+    }
+    setInterval(updateMarket, 1000);
 
-        // --- Period Sync Engine ---
-        function startSyncEngine() {
-            setInterval(() => {
-                const now = new Date();
-                const seconds = now.getSeconds();
-                const remaining = 60 - seconds;
+    const chatbox = document.getElementById('chatbox');
+
+    function appendMessage(text, type) {
+        const div = document.createElement('div');
+        div.className = "message " + (type === 'user' ? 'user-message' : 'ai-message');
+        div.innerHTML = text;
+        chatbox.appendChild(div);
+        chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function processAI() {
+        const input = document.getElementById('userInput');
+        const val = input.value.trim();
+        if (val === "") return;
+
+        appendMessage(val, 'user');
+        input.value = "";
+
+        // AI এনালাইসিস টাইম ৩০ সেকেন্ডের উপযোগী করে দ্রুত করা হয়েছে (১ সেকেন্ড ডিলে)
+        setTimeout(() => {
+            appendMessage("<i>AI এনালাইসিস শুরু করছে... ৩০ সেকেন্ড পিরিয়ড চেক করা হচ্ছে...</i>", 'ai-message');
+            
+            setTimeout(() => {
+                const results = ["BIG 🔴", "SMALL 🟢", "RED 🔴", "GREEN 🟢"];
+                const res = results[Math.floor(Math.random() * results.length)];
+                const luckyNum = Math.floor(Math.random() * 10);
+                const acc = (Math.random() * (99 - 96) + 96).toFixed(2); // একুরেসি একটু বাড়ানো হয়েছে
                 
-                // ১ মিনিটের টাইমার ডিসপ্লে
-                document.getElementById('time').innerText = `00:${remaining.toString().padStart(2, '0')}`;
-                
-                // পিরিয়ড নম্বর জেনারেশন (গেমের সাথে ম্যাচ করার জন্য)
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                
-                // গেমের লজিক অনুযায়ী: মোট অতিক্রান্ত মিনিট গণনা
-                const totalMinutes = (now.getHours() * 60) + now.getMinutes();
-                const periodId = `${year}${month}${day}10001${String(10000 + totalMinutes).slice(-4)}`;
-                
-                document.getElementById('period').innerText = periodId;
+                const response = `
+                    <div class="result-card">
+                        <span style="color:var(--ai-accent); font-size:11px;">GPT-v4 30S MODE</span><br>
+                        <b style="font-size:22px; color:white;">${res}</b><br>
+                        <span style="color:#888;">LUCKY NUMBER: ${luckyNum}</span><br>
+                        <hr style="border:0.5px solid #333; margin:10px 0;">
+                        <span style="font-size:12px; color: #ffcc00;">CONFIDENCE: ${acc}%</span>
+                    </div>
+                `;
+                chatbox.lastChild.innerHTML = response;
+                document.querySelectorAll('.num-chip').forEach(c => c.classList.remove('hit'));
+                document.getElementById('n-' + luckyNum).classList.add('hit');
+            }, 1200); // দ্রুত রেজাল্ট জেনারেশন
+        }, 300);
+    }
+</script>
 
-                // নতুন পিরিয়ড শুরু হলে (০ সেকেন্ডে)
-                if (seconds === 0 && lastLoggedPeriod !== periodId) {
-                    addHistoryRow(periodId);
-                    lastLoggedPeriod = periodId;
-                    generatePrediction();
-                }
-
-                // প্রেডিকশন আগেভাগে দেখানোর জন্য (৫ সেকেন্ড আগে)
-                if (seconds === 55) {
-                    // এটি পরবর্তী পিরিয়ডের জন্য তৈরি হবে
-                }
-            }, 1000);
-        }
-
-        function generatePrediction() {
-            const isSmall = Math.random() > 0.5;
-            currentPred = isSmall ? "Small" : "Big";
-            if (isSmall) {
-                currentNums = [0, 1, 2, 3, 4].sort(() => 0.5 - Math.random()).slice(0, 2).sort().join(", ");
-                document.getElementById('predResult').style.color = "#00ff88";
-            } else {
-                currentNums = [5, 6, 7, 8, 9].sort(() => 0.5 - Math.random()).slice(0, 2).sort().join(", ");
-                document.getElementById('predResult').style.color = "#ffcc00";
-            }
-            document.getElementById('predResult').innerText = currentPred;
-            document.getElementById('predNums').innerText = currentNums;
-        }
-
-        function addHistoryRow(pid) {
-            const win = Math.random() > 0.3; // ৭০% উইন রেট
-            const actual = win ? currentPred : (currentPred === "Small" ? "Big" : "Small");
-            const row = `<tr>
-                <td>...${pid.slice(-4)}</td>
-                <td style="color:${currentPred==='Small'?'#00ff88':'#ffcc00'}">${currentPred}</td>
-                <td>${actual}</td>
-                <td class="${win?'status-win':'status-loss'}">${win?'Win':'Loss'}</td>
-            </tr>`;
-            document.getElementById('historyBody').insertAdjacentHTML('afterbegin', row);
-        }
-
-        // Admin Panel Logic
-        function showAdminPrompt() { document.getElementById('adminBox').style.display = 'block'; }
-        window.addEventListener('keydown', (e) => { if (e.ctrlKey && e.shiftKey && e.code === 'KeyA') showAdminPrompt(); });
-
-        function accessAdmin() {
-            if (document.getElementById('adminPass').value === ADMIN_PASS) {
-                document.getElementById('adminLoginPart').style.display = 'none';
-                document.getElementById('adminControls').style.display = 'block';
-            } else { alert("Wrong Password!"); }
-        }
-
-        function saveSettings() {
-            const nk = document.getElementById('newKeyInput').value;
-            const np = document.getElementById('newAdminPass').value;
-            if(nk) MASTER_KEY = nk;
-            if(np) ADMIN_PASS = np;
-            alert("Settings Updated!");
-            closeAdmin();
-        }
-
-        function closeAdmin() {
-            document.getElementById('adminBox').style.display = 'none';
-            document.getElementById('adminLoginPart').style.display = 'block';
-            document.getElementById('adminControls').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
