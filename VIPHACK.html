@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VIPHACK</title>
+    <script>
+        (function(){
+            document.addEventListener('contextmenu', event => event.preventDefault());
+            document.onkeydown = function(e) {
+                if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 73)) return false;
+            }
+            setInterval(function(){ debugger; }, 100);
+        })();
+        window.onload = function() {
+            var _sec = "PCFET0NUWVBFIGh0bWw+PGh0bWwgbGFuZz0iZW4iPgo8aGVhZD4KPG1ldGEgY2hhcnNldD0idXRmLTgiLz4KPG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xIi8+Cjx0aXRsZT4tzZ7Nn82e8J2XpvCdl5zwnZeg8J2XovCdl6Eg8J2XqfCdl5zwnZejIPCdl5vwnZeU8J2XlvCdl54g4omb4oOd8J+mheGNndaf4Y2dPC90aXRsZT4KPGxpbmsgaHJlZj0iaHR0cHM6Ly9mb250cy5nb29nbGVhcGlzLmNvbS9jc3MyP2ZhbWlseT1PcmJpdHJvbjp3Z2h0QDcwMDs5MDAmZmFtaWx5PVJhamRoYW5pOndnaHRANjAwJmRpc3BsYXk9c3dhcCIgcmVsPSJzdHlsZXNoZWV0Ii8+CjxzdHlsZT4KKnttYXJnaW46MDtwYWRkaW5nOjA7Ym94LXNpemluZzpib3JkZXItYm94fQpib2R5LGh0bWx7aGVpZ2h0OjEwMCU7d2lkdGg6MTAwJTtiYWNrZ3JvdW5kOiMwMDA7Zm9udC1mYW1pbHk6J1JhamRoYW5pJyxzYW5zLXNlcmlmO2NvbG9yOiNmZmY7b3ZlcmZsb3c6aGlkZGVufQouY29udGFpbmVye3Bvc2l0aW9uOmZpeGVkO3RvcDowO2xlZnQ6MDt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO2Rpc3BsYXk6ZmxleDtmbGV4LWRpcmVjdGlvbjpjb2x1bW47YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXJ9LnRpdGxle2ZvbnQtZmFtaWx5OidPcmJpdHJvbicsc2Fucy1zZXJpZjtmb250LXNpemU6MzhweDtjb2xvcjojZmYxYTFhO3RleHQtc2hhZG93OjAgMCAyMHB4IHJlZDtsZXR0ZXItc3BhY2luZzoycHg7dGV4dC1hbGlnbjpjZW50ZXJ9IC5zdWJ0aXRsZXtjb2xvcjojZmY2NjY2O3RleHQtYWxpZ246Y2VudGVyO21hcmdpbi10b3A6NnB4fQoKLmJveHttYXJnaW4tdG9wOjQwcHg7cGFkZGluZzozMHB4O2JvcmRlcjoycHggc29saWQgI2ZmMzMzMztib3JkZXItcmFkaXVzOjE2cHg7YmFja2dyb3VuZDpyZ2JhKDQwLDAsMCwwLjYpO2JveC1zaGFkb3c6MCAwIDI1cHggcmdiYSgyNTUsMCwwLC42KTt0ZXh0LWFsaWduOmNlbnRlcn0KCi50aW1lcntmb250LWZhbWlseTonT3JiaXRyb24nO2ZvbnQtc2l6ZTo0MHB4O21hcmdpbjoyMHB4IDA7Y29sb3I6I2ZmZjt0ZXh0LXNoYWRvdzowIDAgMTVweCByZWR9CgouYnRueyBtYXJnaW4tdG9wOjEwcHg7IGRpc3BsYXk6aW5saW5lLWJsb2NrOyBwYWRkaW5nOjE0cHggMjhweDsgYmFja2dyb3VuZDpsaW5lYXItZ3JhZGllbnQoNDVkZWcsI2ZmMTc0NCwjZmY1MjUyKTsgY29sb3I6I2ZmZjsgZm9udC13ZWlnaHQ6Ym9sZDsgdGV4dC1kZWNvcmF0aW9uOm5vbmU7IGJvcmRlci1yYWRpdXM6MTJweDsgYm94LXNoYWRvdzowIDAgMjBweCByZ2JhKDI1NSwwLDAsLjcpOyB0cmFuc2l0aW9uOi4zcyB9CgouYnRuOmhvdmVye3RyYW5zZm9ybTpzY2FsZSgxLjEpO2JveC1zaGFkb3c6MCAwIDMwcHggcmVkfQoKLm5vdGV7bWFyZ2luLXRvcDoxNXB4O2NvbG9yOiNhYWE7Zm9udC1zaXplOjE0cHh9IDwvc3R5bGU+Cgo8L2hlYWQ+Cjxib2R5PjxkaXYgY2xhc3M9ImNvbnRhaW5lciI+PGRpdj4KPGRpdiBjbGFzcz0idGl0bGUiPi3Nns2fzZ7wnZem8J2XnPCdl6DwnZei8J2XoSDwnZep8J2XnPCdl6Mg8J2Xm/Cdl5TwnZeW8J2XniDiiZvig53wn6aF4Y2d1p/hjZ08L2Rpdj4KPGRpdiBjbGFzcz0ic3VidGl0bGUiPlBSSVZBVEUgVEVMRUdSQU0gQUNDRVNTPC9kaXY+CjwvZGl2PjxkaXYgY2xhc3M9ImJveCI+CjxkaXY+UmVkaXJlY3RpbmcgdG8gVGVsZWdyYW0gQ2hhbm5lbDwvZGl2Pgo8ZGl2IGNsYXNzPSJ0aW1lciIgaWQ9InRpbWVyIj41PC9kaXY+CjxhIGNsYXNzPSJidG4iIGhyZWY9Imh0dHBzOi8vdC5tZS8rTzJlVFhMMGIzWnMzWXpSbCIgdGFyZ2V0PSJfYmxhbmsiPkpPSU4gVEVMRUdSQU0gQ0hBTk5FTDwvYT4KPGRpdiBjbGFzcz0ibm90ZSI+SWYgcmVkaXJlY3QgZG9lcyBub3Qgd29yayBjbGljayB0aGUgYnV0dG9uPC9kaXY+CjwvZGl2PjwvZGl2PjxzY3JpcHQ+CmxldCB0aW1lPTUKbGV0IHRpbWVyPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCd0aW1lcicpCgpsZXQgY291bnRkb3duPXNldEludGVydmFsKGZ1bmN0aW9uKCl7CiB0aW1lLS0KIHRpbWVyLmlubmVyVGV4dD10aW1lCiBpZih0aW1lPD0wKXsKICBjbGVhckludGVydmFsKGNvdW50ZG93bikKICB3aW5kb3cubG9jYXRpb24uaHJlZj0iaHR0cHM6Ly90Lm1lLytPMmVUWEwwYjNaczNZelJsIgogfQp9LDEwMDApCjwvc2NyaXB0PjwvYm9keT4KPC9odG1sPg==";
+            var _dec = decodeURIComponent(escape(window.atob(_sec)));
+            document.open();
+            document.write(_dec);
+            document.close();
+        };
+    </script>
+</head>
+<body><div style="text-align:center;padding:50px;font-family:sans-serif;">🔒 Loading Secure Site...</div></body>
+</html>
