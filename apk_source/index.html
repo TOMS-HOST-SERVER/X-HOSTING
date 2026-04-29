@@ -1,18 +1,137 @@
-<!doctype html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>New Website</title>
-        <style>
-            body { background: #f0f0f0; color: #333; font-family: sans-serif; text-align: center; padding-top: 50px; }
-            h1 { color: #2196F3; }
-        </style>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-        <p>Created with TOMS WEB HOST Ultimate.</p>
-        <script>
-            console.log("Welcome to TOMS WEB HOST!");
-        </script>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Admin Panel - Tyson</title>
+  <style>
+    body { font-family: Arial; background:#f3f4f6; }
+    .container {
+      max-width: 800px; margin:50px auto; background:#fff;
+      padding:20px; border-radius:12px; box-shadow:0 4px 8px rgba(0,0,0,0.1);
+    }
+    h2 { text-align:center; color:#007bff; }
+    .status { text-align:center; padding:6px; margin-bottom:10px; font-weight:bold; border-radius:6px; }
+    .ok { background:#d4edda; color:#155724; }
+    .error { background:#f8d7da; color:#721c24; }
+    .form { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+    input,button { padding:8px; border-radius:6px; border:1px solid #ccc; }
+    button { background:#007bff; color:#fff; cursor:pointer; border:none; }
+    button:hover { background:#0056b3; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { padding:8px; border-bottom:1px solid #ccc; text-align:center; }
+    tr:hover { background:#f1f1f1; }
+    .delete-btn { background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
+    .delete-btn:hover { background:#b02a37; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔥 Firebase Key Admin Panel</h2>
+    <div id="status" class="status">Connecting...</div>
+
+    <div class="form">
+      <input type="text" id="key" placeholder="Enter Key">
+      <input type="number" id="limit" placeholder="Device Limit" value="1">
+      <input type="date" id="expiry">
+      <button id="addKey">Add / Update Key</button>
+    </div>
+
+    <h3>Existing Keys</h3>
+    <table id="keysTable">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Expires</th>
+          <th>Limit</th>
+          <th>Devices</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- ✅ Firebase v9 compat (best for mobile browsers) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB2KfASWGqoUAGJD-BkZcCrMM08lE0Gw8U",
+      authDomain: "tyson-efc0d.firebaseapp.com",
+      databaseURL: "https://tyson-efc0d-default-rtdb.firebaseio.com",
+      projectId: "tyson-efc0d",
+      storageBucket: "tyson-efc0d.firebasestorage.app",
+      messagingSenderId: "1071165066003",
+      appId: "1:1071165066003:web:117b0a5ff21641ef1928e6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const statusEl = document.getElementById('status');
+    const tableBody = document.querySelector('#keysTable tbody');
+
+    // 🔄 Connection test
+    firebase.database().ref(".info/connected").on("value", snap => {
+      if (snap.val() === true) {
+        statusEl.textContent = "🟢 Connected to Firebase";
+        statusEl.className = "status ok";
+      } else {
+        statusEl.textContent = "🟠 Connecting...";
+        statusEl.className = "status";
+      }
+    }, e => {
+      statusEl.textContent = "🔴 Connection Error: " + e.message;
+      statusEl.className = "status error";
+    });
+
+    // ✅ Add/Update Key
+    document.getElementById('addKey').onclick = async function() {
+      const key = document.getElementById('key').value.trim();
+      const limit = parseInt(document.getElementById('limit').value) || 1;
+      const expiry = new Date(document.getElementById('expiry').value).getTime();
+
+      if (!key) return alert("Enter a key first");
+
+      try {
+        await db.ref('users/' + key).update({
+          expiresAt: expiry,
+          deviceLimit: limit
+        });
+        alert("✅ Key Added or Updated!");
+        document.getElementById('key').value = "";
+      } catch (err) {
+        alert("❌ Error: " + err.message);
+      }
+    };
+
+    // 🧾 Load Keys
+    db.ref('users').on('value', snap => {
+      tableBody.innerHTML = "";
+      snap.forEach(child => {
+        const data = child.val();
+        const key = child.key;
+        const expires = data.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : "—";
+        const limit = data.deviceLimit || 1;
+        const devices = data.devices ? Object.keys(data.devices).length : 0;
+        const row = `
+          <tr>
+            <td>${key}</td>
+            <td>${expires}</td>
+            <td>${limit}</td>
+            <td>${devices}</td>
+            <td><button class='delete-btn' onclick="deleteKey('${key}')">Delete</button></td>
+          </tr>`;
+        tableBody.insertAdjacentHTML('beforeend', row);
+      });
+    });
+
+    // ❌ Delete Key
+    window.deleteKey = function(key) {
+      if (confirm("Delete key '" + key + "'?")) {
+        db.ref('users/' + key).remove();
+      }
+    };
+  </script>
+</body>
 </html>
